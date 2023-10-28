@@ -47,6 +47,6 @@ public class MealsUtil {
     }
 
     public static List<Meal> getMeals() {
-        return meals;
+        return MealsUtil.meals;
     }
 }
