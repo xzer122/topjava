@@ -19,6 +19,6 @@ public class MealServlet extends HttpServlet {
                 LocalTime.MIN,
                 LocalTime.MAX,
                 MealsUtil.CALORIES_PER_DAY));
-        req.getRequestDispatcher("/meal.jsp").forward(req, resp);
+        req.getRequestDispatcher("meal.jsp").forward(req, resp);
     }
 }

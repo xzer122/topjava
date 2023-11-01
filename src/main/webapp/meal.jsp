@@ -33,11 +33,11 @@
     </thead>
     <c:forEach items="${listOfMeals}" var="meal">
         <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.model.MealTo"/>
-        <tr class="${meal.exceed ? exceeded : normal}">
-            <td>${meal.description}</td>
+        <tr class="${meal.excess ? "exceeded" : "normal"}">
+            <td>${meal.dateTime}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            </tr>
+        </tr>
     </c:forEach>
 </table>
 </body>
