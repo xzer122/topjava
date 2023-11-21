@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.repository.inmemory;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.MutualMealSingletonRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
@@ -15,7 +14,7 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        //MutualMealSingletonRepository mutualMeal = MutualMealSingletonRepository.
+        MealsUtil.meals.forEach(this::save);
     }
 
     @Override
@@ -36,6 +35,9 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id) {
+        if (repository.get(id).getUserID() != 1) {
+            return repository.get(id);
+        }
         return null;
     }
 
