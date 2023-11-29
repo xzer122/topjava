@@ -84,12 +84,12 @@ public class InMemoryUserRepository implements UserRepository {
         return index;
     }
 
-    private List<User> setUsersFormTo(List<User> users, int indexFrom, int indexTo, List<User> listFrom) {
+    private void setUsersFormTo(List<User> users, int indexFrom, int indexTo, List<User> listFrom) {
         int index = indexFrom;
         while (index < indexTo) {
-            users.set(index, listFrom.get(index - indexTo));
+            users.set(index, listFrom.get(index - indexFrom));
+            index++;
         }
-        return users;
     }
 
     @Override
