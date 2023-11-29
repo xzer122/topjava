@@ -21,11 +21,12 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    private MealRepository repository;
+    private final ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+    private MealRestController mealService;
 
     @Override
     public void init() {
-        repository = new InMemoryMealRepository();
+        mealService = appCtx.getBean(MealRestController.class);
     }
 
     @Override
@@ -43,58 +44,60 @@ public class MealServlet extends HttpServlet {
         repository.save(meal, 1);
         response.sendRedirect("meals");*/
 
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-            request.setCharacterEncoding("UTF-8");
-            String id = request.getParameter("id");
+        request.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
 
-            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                    LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"),
-                    Integer.parseInt(request.getParameter("calories")),
-                    SecurityUtil.authUserId());
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")),
+                SecurityUtil.authUserId());
 
-            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-            if (meal.isNew()) mealRestController.create(meal);
-            else mealRestController.update(meal);
-            response.sendRedirect("meals");
-        }
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        if (meal.isNew()) mealService.create(meal);
+        else mealService.update(meal);
+        response.sendRedirect("meals");
+
+        destroy();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            String action = request.getParameter("action");
-            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
+        String action = request.getParameter("action");
 
-
-            switch (action == null ? "all" : action) {
-                case "delete":
-                    int id = getId(request);
-                    log.info("Delete id={}", id);
-                    mealRestController.delete(id);
-                    response.sendRedirect("meals");
-                    break;
-                case "create":
-                case "update":
-                    final Meal meal = "create".equals(action) ?
-                            new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, 1) :
-                            mealRestController.get(getId(request));
-                    request.setAttribute("meal", meal);
-                    request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
-                    break;
-                case "all":
-                default:
-                    log.info("getAll");
-                    request.setAttribute("meals", mealRestController.getAll());
-                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                    break;
-            }
+        switch (action == null ? "all" : action) {
+            case "delete":
+                int id = getId(request);
+                log.info("Delete id={}", id);
+                mealService.delete(id);
+                response.sendRedirect("meals");
+                break;
+            case "create":
+            case "update":
+                final Meal meal = "create".equals(action) ?
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, 1) :
+                        mealService.get(getId(request));
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "all":
+            default:
+                log.info("getAll");
+                request.setAttribute("meals", mealService.getAll());
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
         }
+
+        destroy();
     }
 
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
     }
 }
