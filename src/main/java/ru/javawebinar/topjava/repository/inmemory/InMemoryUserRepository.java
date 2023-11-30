@@ -96,7 +96,10 @@ public class InMemoryUserRepository implements UserRepository {
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         User user = null;
-        for (User currentUser : repository.values()) user = currentUser.getEmail().equals(email) ? currentUser : null;
+        for (User currentUser : repository.values())
+            if (currentUser.getEmail().equals(email)) {
+                user = currentUser;
+            }
         return user;
     }
 }

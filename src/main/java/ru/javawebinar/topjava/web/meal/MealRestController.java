@@ -22,11 +22,11 @@ public class MealRestController {
     private MealService service;
 
     public List<MealTo> getAll() {
-        return MealsUtil.getTos(new ArrayList<>(service.getAll()), 2000);
+        return MealsUtil.getTos(new ArrayList<>(service.getAll(SecurityUtil.authUserId())), 2000);
     }
 
     public List<MealTo> getAllFilteredByDateTime(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        List<MealTo> filteredByDate = MealsUtil.getTos(new ArrayList<>(service.getAll().stream()
+        List<MealTo> filteredByDate = MealsUtil.getTos(new ArrayList<>(service.getAll(SecurityUtil.authUserId()).stream()
                 .filter(mealTo -> mealTo.getDate().isAfter(startDate) && mealTo.getDate().isBefore(endDate))
                 .collect(Collectors.toList())), 2000);
         return filteredByDate.stream()
