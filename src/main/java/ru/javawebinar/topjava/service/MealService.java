@@ -21,12 +21,12 @@ public class MealService {
         return repository.save(meal, userId);
     }
 
-    public void delete(int mealID, int userId) {
-        checkNotFoundWithId(repository.delete(mealID, userId), mealID);
+    public void delete(int mealId, int userId) {
+        checkNotFoundWithId(repository.delete(mealId, userId), mealId);
     }
 
-    public Meal get(int mealID, int userId) {
-        return checkNotFoundWithId(repository.get(mealID, userId), mealID);
+    public Meal get(int mealId, int userId) {
+        return checkNotFoundWithId(repository.get(mealId, userId), mealId);
     }
 
     public List<Meal> getAll(int userId) {

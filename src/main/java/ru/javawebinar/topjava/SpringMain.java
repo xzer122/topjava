@@ -4,7 +4,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
@@ -22,7 +21,6 @@ public class SpringMain {
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             adminUserController.getAll().forEach(System.out::println);
             mealRestController.getAll().forEach(System.out::println);
-            MealsUtil.meals.forEach(mealRestController::create);
             System.out.println(adminUserController.getByMail("js@mail.ru"));
         }
     }
