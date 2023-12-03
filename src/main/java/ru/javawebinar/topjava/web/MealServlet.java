@@ -7,6 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
+import ru.javawebinar.topjava.to.DataTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -85,6 +86,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "filter":
                 // add filter
+                // DataTo dates = getFilterParams(request);
                 break;
             case "all":
             default:
@@ -102,7 +104,7 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    private List<LocalDateTime> getFilterParams(HttpServletRequest request) {
+    private DataTo getFilterParams(HttpServletRequest request) {
         /*String startTime = Objects.requireNonNull(request.getParameter("startTime"));
         LocalDate startLocalDate =*/
         return null;
