@@ -20,6 +20,32 @@
 <h3><a href="index.html">Home</a></h3>
 <hr/>
 <h2>Meals</h2>
+<div class="card border-dark">
+    <div class="card-body pb-0">
+        <form id="filter">
+            <div class="row">
+                <div class="col-2">
+                    <label for="startDate">От даты (включая)</label>
+                    <input class="form-control" name="startDate" id="startDate" autocomplete="off">
+                </div>
+                <div class="col-2">
+                    <label for="endDate">До даты (включая)</label>
+                    <input class="form-control" name="endDate" id="endDate" autocomplete="off"></div>
+                <div class="offset-2 col-3">
+                    <label for="startTime">От времени (включая)</label>
+                    <input class="form-control" name="startTime" id="startTime" autocomplete="off">
+                </div>
+                <div class="col-3">
+                    <label for="endTime">До времени (включая)</label>
+                    <input class="form-control" name="endTime" id="endTime" autocomplete="off">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-right">
+        <a href="meals?action=filter%startDate=startDate">Filter</a>
+    </div>
+</div>
 <a href="meals?action=create">Add Meal</a>
 <br><br>
 <table border="1" cellpadding="8" cellspacing="0">
@@ -36,10 +62,10 @@
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
         <tr class="${meal.excess ? 'excess' : 'normal'}">
             <td>
-                    <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                    <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                    <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
-                    ${fn:formatDateTime(meal.dateTime)}
+                <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
+                <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
+                <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
+                ${fn:formatDateTime(meal.dateTime)}
             </td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
