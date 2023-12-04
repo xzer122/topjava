@@ -1,14 +1,23 @@
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <title>Java Enterprise (Topjava)</title>
-    </head>
-    <body>
-        <h3>Проект <a href="https://github.com/xzer122/topjava" target="_blank">Java Enterprise (Topjava)</a></h3>
-        <hr>
-        <ul style="font-size: large">
-            <li><a href="users">Users</a></li>
-            <li><a href="meals">Meals</a></li>
-        </ul>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Java Enterprise (Topjava)</title>
+</head>
+<body>
+<h3>Проект <a href="https://github.com/xzer122/topjava" target="_blank">Java Enterprise (Topjava)</a></h3>
+<hr>
+<form action="users" method="get">
+    <input type="hidden" value="setUser" name="action">
+    <p><select name="user">
+        <option disabled>Choose user</option>
+        <option value="1" selected>Set User1 as authorized user</option>
+        <option value="2">Set User2 as authorized user</option>
+    </select></p>
+    <p><input type="submit" value="Save"/></p>
+</form>
+<ul style="font-size: large">
+    <li><a href="users">Users</a></li>
+    <li><a href="meals">Meals</a></li>
+</ul>
+</body>
 </html>
