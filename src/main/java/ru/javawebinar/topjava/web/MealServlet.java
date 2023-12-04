@@ -5,9 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.to.DataTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -17,9 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -85,9 +81,23 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
-                // add filter
-                // DataTo dates = getFilterParams(request);
-                break;
+                log.info("filter");
+                try {
+                    String stringStartDate = Objects.requireNonNull(request.getParameter("startDate"));
+                    String stringEndDate = Objects.requireNonNull((request.getParameter("endDate")));
+                    String stringStartTime = Objects.requireNonNull(request.getParameter("startTime"));
+                    String stringEndTime = Objects.requireNonNull(request.getParameter("endTime"));
+
+                    LocalDate startDate = stringStartDate.equals("") ? LocalDate.parse("2022-01-01") : LocalDate.parse(stringStartDate);
+                    LocalDate endDate = stringEndDate.equals("") ? LocalDate.now() : LocalDate.parse(stringEndDate);
+                    LocalTime startTime = stringStartTime.equals("") ? LocalTime.MIN : LocalTime.parse(stringStartTime);
+                    LocalTime endTime = stringEndTime.equals("") ? LocalTime.MAX : LocalTime.parse(stringEndTime);
+
+                    request.setAttribute("meals", mealController.getAllFilteredByDateTime(startDate, startTime, endDate, endTime));
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                } catch (Exception e) {
+                    request.setAttribute("errorMessage", "Неправильно введена дата или время");
+                }
             case "all":
             default:
                 log.info("getAll");
@@ -102,12 +112,6 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
-    }
-
-    private DataTo getFilterParams(HttpServletRequest request) {
-        /*String startTime = Objects.requireNonNull(request.getParameter("startTime"));
-        LocalDate startLocalDate =*/
-        return null;
     }
 
     @Override
