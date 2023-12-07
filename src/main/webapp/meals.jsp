@@ -27,18 +27,18 @@
             <input type="hidden" value="filter" name="action">
             <div class="col-2">
                 <label for="startDate">От даты (включая)</label>
-                <input class="date-local" name="startDate" id="startDate" autocomplete="off">
+                <input class="date-local" type="date" name="startDate" id="startDate" autocomplete="off">
             </div>
             <div class="col-2">
                 <label for="endDate">До даты (включая)</label>
-                <input class="form-control" name="endDate" id="endDate" autocomplete="off"></div>
+                <input class="form-control" type="date" name="endDate" id="endDate" autocomplete="off"></div>
             <div class="offset-2 col-3">
                 <label for="startTime">От времени (включая)</label>
-                <input class="form-control" name="startTime" id="startTime" autocomplete="off">
+                <input class="form-control" type="time" name="startTime" id="startTime" autocomplete="off">
             </div>
             <div class="col-3">
                 <label for="endTime">До времени (включая)</label>
-                <input class="form-control" name="endTime" id="endTime" autocomplete="off">
+                <input class="form-control" type="time" name="endTime" id="endTime" autocomplete="off">
             </div>
             <button type="submit">Filter</button>
         </form>

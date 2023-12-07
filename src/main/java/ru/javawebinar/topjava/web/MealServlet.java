@@ -55,10 +55,8 @@ public class MealServlet extends HttpServlet {
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (meal.isNew()) mealController.create(meal);
-        else mealController.update(meal);
+        else mealController.update(meal, meal.getId());
         response.sendRedirect("meals");
-
-        destroy();
     }
 
     @Override
@@ -83,21 +81,18 @@ public class MealServlet extends HttpServlet {
             case "filter":
                 log.info("filter");
                 try {
-                    String stringStartDate = Objects.requireNonNull(request.getParameter("startDate"));
-                    String stringEndDate = Objects.requireNonNull((request.getParameter("endDate")));
-                    String stringStartTime = Objects.requireNonNull(request.getParameter("startTime"));
-                    String stringEndTime = Objects.requireNonNull(request.getParameter("endTime"));
+                    String startDate = Objects.requireNonNull(request.getParameter("startDate"));
+                    String endDate = Objects.requireNonNull((request.getParameter("endDate")));
+                    String startTime = Objects.requireNonNull(request.getParameter("startTime"));
+                    String endTime = Objects.requireNonNull(request.getParameter("endTime"));
 
-                    LocalDate startDate = stringStartDate.equals("") ? LocalDate.parse("2022-01-01") : LocalDate.parse(stringStartDate);
-                    LocalDate endDate = stringEndDate.equals("") ? LocalDate.now() : LocalDate.parse(stringEndDate);
-                    LocalTime startTime = stringStartTime.equals("") ? LocalTime.MIN : LocalTime.parse(stringStartTime);
-                    LocalTime endTime = stringEndTime.equals("") ? LocalTime.MAX : LocalTime.parse(stringEndTime);
-
-                    request.setAttribute("meals", mealController.getAllFilteredByDateTime(startDate, startTime, endDate, endTime));
+                    request.setAttribute("meals", mealController.getAll(startDate, startTime, endDate, endTime));
                     request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 } catch (Exception e) {
                     request.setAttribute("errorMessage", "Неправильно введена дата или время");
+                    request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 }
+                break;
             case "all":
             default:
                 log.info("getAll");
@@ -105,8 +100,6 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
-
-        destroy();
     }
 
     private int getId(HttpServletRequest request) {

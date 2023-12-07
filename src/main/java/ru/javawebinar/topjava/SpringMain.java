@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 public class SpringMain {
@@ -18,6 +19,16 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
             adminUserController.create(new User(null, "John Smith", "js@mail.ru", "123456", Role.ADMIN));
             adminUserController.create(new User(null, "John Smith", "sj@mail.ru", "password123456", Role.USER));
+            adminUserController.create(new User(null, "John Smith", "sj@mail.ru", "password123456", Role.USER));
+            adminUserController.create(new User(null, "John Smith", "sj@mail.ru", "password123456", Role.USER));
+            adminUserController.create(new User(null, "John Smith", "sj@mail.ru", "password123456", Role.USER));
+            adminUserController.create(new User(null, "Rick Sanchez", "rick@gmail.com", "mortyasshole123", Role.ADMIN));
+            adminUserController.create(new User(null, "Morty Smith", "coolmorty@gmail.com", "password", Role.USER));
+            adminUserController.create(new User(null, "Morty Smith", "coolmorty@gmail.com", "password", Role.USER));
+            adminUserController.create(new User(null, "Morty Smith", "coolmorty@gmail.com", "password", Role.USER));
+            adminUserController.create(new User(null, "Morty Smith", "coolmorty@gmail.com", "password", Role.USER));
+            adminUserController.create(new User(null, "Morty Smith", "coolmorty@gmail.com", "password", Role.USER));
+            adminUserController.create(new User(null, "Morty Smith", "coolmorty@gmail.com", "password", Role.USER));
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             adminUserController.getAll().forEach(System.out::println);
             mealRestController.getAll().forEach(System.out::println);

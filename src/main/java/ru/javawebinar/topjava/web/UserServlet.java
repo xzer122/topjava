@@ -23,7 +23,7 @@ public class UserServlet extends HttpServlet {
             case "setUser":
                 int userId = Integer.parseInt(Objects.requireNonNull(request.getParameter("user")));
                 SecurityUtil.setAuthUserId(userId);
-                request.getRequestDispatcher("/index.html").forward(request, response);
+                request.getRequestDispatcher("meals").forward(request, response);
                 break;
             case "forward":
             default:

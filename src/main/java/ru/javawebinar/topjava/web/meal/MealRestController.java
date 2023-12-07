@@ -7,57 +7,59 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
-import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final int userId = SecurityUtil.authUserId();
 
     @Autowired
     private MealService service;
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay());
+        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAllFilteredByDateTime(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        log.info("getAllFilteredByDateTime from {} {} to {} {}", startDate, startTime, endDate, endTime);
-        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()).stream()
-                .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDate(), startDate, endDate))
-                .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDateTime().toLocalTime(), startTime, endTime))
-                .collect(Collectors.toList()), SecurityUtil.authUserCaloriesPerDay());
+    public List<MealTo> getAll(String startDate, String startTime, String endDate, String endTime) {
+        LocalDate startD = startDate.equals("") ? LocalDate.MIN : LocalDate.parse(startDate);
+        LocalDate endD = endDate.equals("") ? LocalDate.MAX : LocalDate.parse(endDate);
+        LocalTime startT = startTime.equals("") ? LocalTime.MIN : LocalTime.parse(startDate);
+        LocalTime endT = startTime.equals("") ? LocalTime.MAX : LocalTime.parse(startDate);
+
+        log.info("getAll from {} {} to {} {}", startD, startT, endD, endT);
+
+        return MealsUtil.getTos(service.getAll(userId, startD, startT, endD, endT), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public Meal get(int mealId) {
         log.info("get {}", mealId);
-        return service.get(mealId, SecurityUtil.authUserId());
+        return service.get(mealId, userId);
     }
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal, SecurityUtil.authUserId());
+        return service.create(meal, userId);
     }
 
     public void delete(int mealId) {
         log.info("delete {}", mealId);
-        service.delete(mealId, SecurityUtil.authUserId());
+        service.delete(mealId, userId);
     }
 
-    public void update(Meal meal) {
+    public void update(Meal meal, int id) {
         log.info("update {}", meal);
-        assureIdConsistent(meal, meal.getId());
-        service.update(meal, SecurityUtil.authUserId());
+        assureIdConsistent(meal, id);
+        service.update(meal, userId);
     }
 }
