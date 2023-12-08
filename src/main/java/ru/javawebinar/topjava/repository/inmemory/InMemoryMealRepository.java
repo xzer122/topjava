@@ -41,18 +41,18 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        if (repository.containsKey(id)) {
-            Meal currentMeal = repository.get(id);
-            log.info("delete {} by user={}", currentMeal, userId);
-            return currentMeal.getUserId() == userId && repository.remove(id) != null;
+        Meal meal;
+        if ((meal = repository.get(id)) != null) {
+            log.info("delete {} by user={}", meal, userId);
+            return meal.getUserId() == userId && repository.remove(id) != null;
         }
         return false;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        if (repository.containsKey(id)){
-            Meal meal = repository.get(id);
+        Meal meal;
+        if ((meal = repository.get(id)) != null){
             log.info("get {} by user={}", meal, userId);
             if (meal.getUserId() == userId) {
                 return meal;
@@ -64,25 +64,21 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         log.info("getAll by user={}", userId);
-        List<Meal> meals = new ArrayList<>(repository.values()).stream()
+        return repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
-                .sorted(Comparator.comparing(Meal::getDate))
+                .sorted(Comparator.comparing(Meal::getDate).reversed())
                 .collect(Collectors.toList());
-        Collections.reverse(meals);
-        return meals;
     }
 
     @Override
     public List<Meal> getFiltered(int userId, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getAll from {} {} to {} {} by user={}", startDate, startTime, endDate, endTime, userId);
-        List<Meal> meals = new ArrayList<>(repository.values()).stream()
+        return repository.values().stream()
+                .filter(meal -> meal.getUserId() == userId)
                 .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate))
                 .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
-                .filter(meal -> meal.getUserId() == userId)
-                .sorted(Comparator.comparing(Meal::getDate))
+                .sorted(Comparator.comparing(Meal::getDate).reversed())
                 .collect(Collectors.toList());
-        Collections.reverse(meals);
-        return meals;
     }
 }
 
