@@ -31,12 +31,12 @@ public class MealService {
         return checkNotFoundWithId(repository.get(mealId, userId), mealId);
     }
 
-    public List<Meal> getAll(int userId) {
+    public List<Meal> getFiltered(int userId) {
         return repository.getAll(userId);
     }
 
-    public List<Meal> getAll(int userId, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        return repository.getAll(userId, startDate, startTime, endDate, endTime);
+    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+        return repository.getFiltered(userId, startDate, startTime, endDate, endTime);
     }
 
     public Meal update(Meal meal, int userId) {
