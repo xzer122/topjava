@@ -23,8 +23,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, 1));
-        MealsUtil.meals.forEach(meal -> save(meal, 2));
+        MealsUtil.mealsUser1.forEach(meal -> save(meal, 1));
+        MealsUtil.mealsUser2.forEach(meal -> save(meal, 2));
     }
 
     @Override
@@ -32,6 +32,7 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("save {} by user={}", meal, userId);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+            meal.setUserId(userId);
             repository.put(meal.getId(), meal);
             return meal;
         }
@@ -66,18 +67,17 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("getAll by user={}", userId);
         return repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
+                .sorted(Comparator.comparing(Meal::getDate).thenComparing(meal -> meal.getDateTime().toLocalTime()).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        log.info("getAll from {} {} to {} {} by user={}", startDate, startTime, endDate, endTime, userId);
+    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+        log.info("getAll from {} to {} by user={}", startDate, endDate, userId);
         return repository.values().stream()
                 .filter(meal -> meal.getUserId() == userId)
                 .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate))
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
+                .sorted(Comparator.comparing(Meal::getDate).thenComparing(meal -> meal.getDateTime().toLocalTime()).reversed())
                 .collect(Collectors.toList());
     }
 }

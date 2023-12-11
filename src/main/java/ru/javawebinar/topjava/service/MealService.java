@@ -35,8 +35,8 @@ public class MealService {
         return repository.getAll(userId);
     }
 
-    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        return repository.getFiltered(userId, startDate, startTime, endDate, endTime);
+    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+        return repository.getFiltered(userId, startDate, endDate);
     }
 
     public Meal update(Meal meal, int userId) {
