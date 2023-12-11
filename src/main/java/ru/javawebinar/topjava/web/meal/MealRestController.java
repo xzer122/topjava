@@ -20,7 +20,6 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 @Controller
 public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final int userId = SecurityUtil.authUserId();
 
     @Autowired
     private MealService service;
@@ -38,28 +37,28 @@ public class MealRestController {
 
         log.info("getAll from {} {} to {} {}", startD, startT, endD, endT);
 
-        return MealsUtil.getTos(service.getFiltered(userId, startD, startT, endD, endT), SecurityUtil.authUserCaloriesPerDay());
+        return MealsUtil.getTos(service.getFiltered(SecurityUtil.authUserId(), startD, startT, endD, endT), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public Meal get(int mealId) {
-        log.info("get {}", mealId);
-        return service.get(mealId, userId);
+        log.info("get by user={}", mealId);
+        return service.get(mealId, SecurityUtil.authUserId());
     }
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal, userId);
+        return service.create(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int mealId) {
         log.info("delete {}", mealId);
-        service.delete(mealId, userId);
+        service.delete(mealId, SecurityUtil.authUserId());
     }
 
     public void update(Meal meal, int id) {
         log.info("update {}", meal);
         assureIdConsistent(meal, id);
-        service.update(meal, userId);
+        service.update(meal, SecurityUtil.authUserId());
     }
 }
