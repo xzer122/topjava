@@ -31,7 +31,7 @@ public class MealService {
         return checkNotFoundWithId(repository.get(mealId, userId), mealId);
     }
 
-    public List<Meal> getFiltered(int userId) {
+    public List<Meal> getAll(int userId) {
         return repository.getAll(userId);
     }
 

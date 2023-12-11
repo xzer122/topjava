@@ -37,7 +37,7 @@
                 <input class="form-control" type="time" name="startTime" id="startTime" autocomplete="off">
             </div>
             <div class="col-3">
-                <label for="endTime">До времени (включая)</label>
+                <label for="endTime">До времени (исключая)</label>
                 <input class="form-control" type="time" name="endTime" id="endTime" autocomplete="off">
             </div>
             <button type="submit">Filter</button>
