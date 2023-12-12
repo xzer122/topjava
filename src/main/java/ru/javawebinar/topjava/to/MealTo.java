@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.to;
 
 import java.time.LocalDateTime;
 
-public class MealTo{
+public class MealTo {
 
     private final int id;
 

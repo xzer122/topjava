@@ -41,13 +41,14 @@ public class MealRestController {
     }
 
     public Meal get(int mealId) {
-        log.info("get by user={}", mealId);
+        log.info("get {}", mealId);
         return service.get(mealId, SecurityUtil.authUserId());
     }
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
+        meal.setUserId(SecurityUtil.authUserId());
         return service.create(meal, SecurityUtil.authUserId());
     }
 
@@ -59,6 +60,7 @@ public class MealRestController {
     public void update(Meal meal, int id) {
         log.info("update {}", meal);
         assureIdConsistent(meal, id);
+        meal.setUserId(SecurityUtil.authUserId());
         service.update(meal, SecurityUtil.authUserId());
     }
 }

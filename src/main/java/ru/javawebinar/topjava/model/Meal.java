@@ -49,7 +49,9 @@ public class Meal extends AbstractBaseEntity implements Comparable<Meal>{
         return dateTime.toLocalTime();
     }
 
-    public void setUserId(int userId) {this.userId = userId;}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     @Override
     public int compareTo(Meal o) {
