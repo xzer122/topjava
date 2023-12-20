@@ -48,8 +48,8 @@ public class JdbcMealRepository implements MealRepository {
         if (meal.isNew()){
             Number key = insertMeal.executeAndReturnKey(map);
             meal.setId(key.intValue());
-        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, desctiption=:description, " +
-                "calories=:calories WHERE id=:?, user_id=?", map) == 0) {
+        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description, " +
+                "calories=:calories WHERE id=:? && user_id=?", map) == 0) {
             return null;
         }
         return meal;
@@ -57,18 +57,18 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("UPDATE FROM meals WHERE id=?, user_id=?", id, userId) != 0;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=? && user_id=?", id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=?, user_id=?", ROW_MAPPER, new Object[]{id, userId});
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? && user_id=?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, new Object[]{userId});
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, userId);
         return getByPredicate(meals, meal -> true, userId);
     }
 
