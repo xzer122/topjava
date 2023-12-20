@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.Util;
 
 import java.time.LocalDateTime;
@@ -43,13 +42,14 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("id", meal.getId())
                 .addValue("date_time", meal.getDateTime())
                 .addValue("description", meal.getDescription())
-                .addValue("calories", meal.getCalories());
+                .addValue("calories", meal.getCalories())
+                .addValue("user_id", meal.getUser_Id());
 
         if (meal.isNew()){
             Number key = insertMeal.executeAndReturnKey(map);
             meal.setId(key.intValue());
         } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, desctiption=:description, " +
-                "calories=:calories WHERE id=:id", map) == 0) {
+                "calories=:calories WHERE id=:?, user_id=?", map) == 0) {
             return null;
         }
         return meal;
@@ -80,7 +80,7 @@ public class JdbcMealRepository implements MealRepository {
 
     private List<Meal> getByPredicate(List<Meal> meals, Predicate<Meal> filter, int user_id) {
         return meals.stream()
-                .filter(meal -> meal.getUserId() == user_id)
+                .filter(meal -> meal.getUser_Id() == user_id)
                 .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDate).reversed())
                 .collect(Collectors.toList());
