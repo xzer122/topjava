@@ -43,13 +43,13 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("date_time", meal.getDateTime())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("user_id", meal.getUser_Id());
-
+                .addValue("user_id", userId);
         if (meal.isNew()){
             Number key = insertMeal.executeAndReturnKey(map);
             meal.setId(key.intValue());
+            meal.setUser_Id(userId);
         } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description, " +
-                "calories=:calories WHERE id=:? && user_id=?", map) == 0) {
+                "calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
         }
         return meal;
@@ -57,28 +57,27 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("DELETE FROM meals WHERE id=? && user_id=?", id, userId) != 0;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? && user_id=?", ROW_MAPPER, id, userId);
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE id=? AND user_id=?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, userId);
-        return getByPredicate(meals, meal -> true, userId);
+        return getByPredicate(meal -> true, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, new Object[userId]);
-        return getByPredicate(meals, meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime), userId);
+        return getByPredicate(meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime), userId);
     }
 
-    private List<Meal> getByPredicate(List<Meal> meals, Predicate<Meal> filter, int user_id) {
+    private List<Meal> getByPredicate(Predicate<Meal> filter, int user_id) {
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, user_id);
         return meals.stream()
                 .filter(meal -> meal.getUser_Id() == user_id)
                 .filter(filter)
