@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.Util;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -47,7 +48,7 @@ public class JdbcMealRepository implements MealRepository {
         if (meal.isNew()){
             Number key = insertMeal.executeAndReturnKey(map);
             meal.setId(key.intValue());
-            meal.setUser_Id(userId);
+            meal.setUserId(userId);
         } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description, " +
                 "calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
@@ -68,20 +69,16 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getByPredicate(meal -> true, userId);
+        return getByPredicate(LocalDateTime.MIN, LocalDateTime.MAX, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return getByPredicate(meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime), userId);
+        return getByPredicate(startDateTime, endDateTime, userId);
     }
 
-    private List<Meal> getByPredicate(Predicate<Meal> filter, int user_id) {
-        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=?", ROW_MAPPER, user_id);
-        return meals.stream()
-                .filter(meal -> meal.getUser_Id() == user_id)
-                .filter(filter)
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
-                .collect(Collectors.toList());
+    private List<Meal> getByPredicate(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND (date_time BETWEEN ? AND ?)",
+                ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }
