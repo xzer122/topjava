@@ -13,7 +13,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 
 public class MealTestData {
     public static final int FIRST_USER_MEAL_ID = 100003;
-    public static final int SECOND_USER_MEAL_ID = 100004;
+    public static final int SECOND_USER_MEAL_ID = 100012;
 
     public static final Meal FIRST_USER_MEAL_1 = new Meal(FIRST_USER_MEAL_ID, LocalDateTime.of(2020, 1, 30, 11, 0, 0), "Завтрак админа", 400);
     public static final Meal FIRST_USER_MEAL_2 = new Meal(100004, LocalDateTime.of(2020, 1,30,13,0,0),"обед админа",900);

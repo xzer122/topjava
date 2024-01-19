@@ -70,6 +70,7 @@ public class MealServiceTest {
                 FIRST_USER_MEAL_3, FIRST_USER_MEAL_2, FIRST_USER_MEAL_1);
     }
 
+
     @Test
     public void update() {
         Meal meal = getUpdated();
@@ -86,5 +87,20 @@ public class MealServiceTest {
     @Test
     public void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, USER_ID));
+    }
+
+    @Test
+    public void getOtherUsersFood() {
+        assertThrows(NotFoundException.class, () -> service.get(SECOND_USER_MEAL_ID, ADMIN_ID));
+    }
+
+    @Test
+    public void updateOtherUsersFood() {
+        assertThrows(NotFoundException.class, () -> service.update(SECOND_USER_MEAL, ADMIN_ID));
+    }
+
+    @Test
+    public void deleteOtherUsersFood() {
+        assertThrows(NotFoundException.class, () -> service.delete(SECOND_USER_MEAL_ID, ADMIN_ID));
     }
 }
