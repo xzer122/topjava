@@ -41,17 +41,14 @@ public class MealServiceTest {
         Integer newId = created.getId();
         Meal newMeal = getNew();
         newMeal.setId(newId);
-        newMeal.setUserId(ADMIN_ID);
         assertMatch(created, newMeal);
         assertMatch(service.get(newId, ADMIN_ID), newMeal);
     }
 
     @Test
     public void duplicateDateTimeCreate() {
-        Meal meal = new Meal(LocalDateTime.of(2020, 1, 30, 11, 0, 0), "Duplicate", 500);
-        meal.setUserId(ADMIN_ID);
-        assertThrows(DataAccessException.class, () ->
-                service.create(meal, ADMIN_ID));
+        Meal meal = new Meal(FIRST_USER_MEAL_1.getDateTime(), "Duplicate", 500);
+        assertThrows(DataAccessException.class, () -> service.create(meal, ADMIN_ID));
     }
 
     @Test
@@ -68,9 +65,9 @@ public class MealServiceTest {
     @Test
     public void getAll() {
         List<Meal> all = service.getAll(ADMIN_ID);
-        assertMatch(all, FIRST_USER_MEAL_1, FIRST_USER_MEAL_2, FIRST_USER_MEAL_3,
-                FIRST_USER_MEAL_4 ,FIRST_USER_MEAL_5, FIRST_USER_MEAL_6,
-                FIRST_USER_MEAL_7, FIRST_USER_MEAL_8, FIRST_USER_MEAL_9);
+        assertMatch(all, FIRST_USER_MEAL_9, FIRST_USER_MEAL_8, FIRST_USER_MEAL_7,
+                FIRST_USER_MEAL_6, FIRST_USER_MEAL_5, FIRST_USER_MEAL_4,
+                FIRST_USER_MEAL_3, FIRST_USER_MEAL_2, FIRST_USER_MEAL_1);
     }
 
     @Test

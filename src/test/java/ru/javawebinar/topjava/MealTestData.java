@@ -2,6 +2,7 @@ package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Meal;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -25,18 +26,13 @@ public class MealTestData {
     public static final Meal FIRST_USER_MEAL_9 = new Meal(100011, LocalDateTime.of(2020, 2, 1, 20, 0 ,0),"Горячий ужин админа", 700);
     public static final Meal SECOND_USER_MEAL = new Meal(SECOND_USER_MEAL_ID, LocalDateTime.of(2020, 1, 30, 12, 0, 0),"Еда юзера", 400);
 
-    static {
-        FIRST_USER_MEAL_1.setUserId(ADMIN_ID);
-        SECOND_USER_MEAL.setUserId(USER_ID);
-    }
-
     public static Meal getNew() {
-        return new Meal(LocalDateTime.now(), "New meal", 500);
+        return new Meal(LocalDateTime.of(2000, 1, 1, 12, 0, 0), "New meal", 500);
     }
 
     public static Meal getUpdated() {
         Meal newMeal = new Meal(FIRST_USER_MEAL_1);
-        newMeal.setDateTime(LocalDateTime.now());
+        newMeal.setDateTime(LocalDateTime.of(2000, 1, 1, 12, 0, 0));
         newMeal.setDescription("Updated");
         newMeal.setCalories(500);
         return newMeal;
