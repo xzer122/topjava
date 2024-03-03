@@ -17,6 +17,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
 
-    private static HashMap<String, LocalTime> testMap = new HashMap<>();
+    private static final HashMap<String, LocalTime> testMap = new HashMap<>();
 
     @Rule
     public TestName name = new TestName();
@@ -47,15 +48,24 @@ public class MealServiceTest {
     public void before() {
         LocalTime currentTime = LocalTime.now();
         String methodName = name.getMethodName();
-        log.info("{}", currentTime);
         testMap.put(methodName, currentTime);
+    }
+
+    @After
+    public void after() {
+        log.info("{} ms", testMap.get(name.getMethodName()).until(LocalTime.now(), ChronoUnit.MILLIS));
     }
 
     @AfterClass
     public static void afterClass() {
+        StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, LocalTime> entry : testMap.entrySet()) {
-            log.info("{} - {}", entry.getKey(), entry.getValue());
+            builder.append(entry.getKey());
+            builder.append(" - ");
+            builder.append(entry.getValue());
+            builder.append('\n');
         }
+        log.info(builder.toString());
     }
 
     @Test
