@@ -23,9 +23,9 @@ public class TimeExecuteLogger extends Stopwatch {
         extracted(description, "failed", nanos);
     }
 
-    private void extracted(Description description, String failed, long nanos) {
+    private void extracted(Description description, String status, long nanos) {
         String testName = description.getMethodName();
-        log.info("{}: {} - {} ms", testName, failed, nanos / 1000000);
+        log.info("{}: {} - {} ms", testName, status, nanos / 1000000);
         testsMap.put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
     }
 
