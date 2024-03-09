@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava;
 
-import org.junit.AssumptionViolatedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
@@ -8,10 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class MyStopWatch extends Stopwatch {
+public class TimeExecuteLogger extends Stopwatch {
     private static final HashMap<String, Long> testsMap = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(MyStopWatch.class);
+    private static final Logger log = LoggerFactory.getLogger(TimeExecuteLogger.class);
 
     public void logInfo(Description description, String status, long nanos) {
         String testName = description.getMethodName();
@@ -21,27 +21,7 @@ public class MyStopWatch extends Stopwatch {
     @Override
     protected void succeeded(long nanos, Description description) {
         logInfo(description, "succeeded", nanos);
-        testsMap.put(description.getMethodName(), nanos/ 1000000);
-    }
-
-    @Override
-    protected void failed(long nanos, Throwable e, Description description) {
-        logInfo(description, "failed", nanos);
-        testsMap.put(description.getMethodName(), nanos / 1000000);
-
-    }
-
-    @Override
-    protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-        logInfo(description, "skipped", nanos);
-        testsMap.put(description.getMethodName(), nanos / 1000000);
-
-    }
-
-    @Override
-    protected void finished(long nanos, Description description) {
-        logInfo(description, "finished", nanos);
-        testsMap.put(description.getMethodName(), nanos / 1000000);
+        put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
     }
 
     public static String result(){
@@ -53,5 +33,9 @@ public class MyStopWatch extends Stopwatch {
             stringBuilder.append(" ms\n");
         }
         return stringBuilder.toString();
+    }
+
+    private void put(String methodName, long nanos) {
+        testsMap.put(methodName, nanos);
     }
 }
