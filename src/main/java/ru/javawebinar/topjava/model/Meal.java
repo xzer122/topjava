@@ -12,8 +12,8 @@ import java.time.LocalTime;
 
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.user.id=?1 ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.HALF_OPEN_PERIOD, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.user.id=:userId " +
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC "),
+        @NamedQuery(name = Meal.HALF_OPEN_PERIOD, query = "SELECT m FROM Meal m WHERE m.user.id=:userId " +
                 "AND m.dateTime >=: start_date_time AND m.dateTime <: end_date_time ORDER BY m.dateTime DESC")
 })
 @Entity
