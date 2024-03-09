@@ -13,15 +13,20 @@ public class TimeExecuteLogger extends Stopwatch {
     private static final HashMap<String, Long> testsMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(TimeExecuteLogger.class);
 
-    public void logInfo(Description description, String status, long nanos) {
-        String testName = description.getMethodName();
-        log.info("{}: {} - {} ms", testName, status, nanos / 1000000);
+    @Override
+    protected void succeeded(long nanos, Description description) {
+        extracted(description, "succeeded", nanos);
     }
 
     @Override
-    protected void succeeded(long nanos, Description description) {
-        logInfo(description, "succeeded", nanos);
-        put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+    protected void failed(long nanos, Throwable e, Description description) {
+        extracted(description, "failed", nanos);
+    }
+
+    private void extracted(Description description, String failed, long nanos) {
+        String testName = description.getMethodName();
+        log.info("{}: {} - {} ms", testName, failed, nanos / 1000000);
+        testsMap.put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
     }
 
     public static String result(){
@@ -35,7 +40,4 @@ public class TimeExecuteLogger extends Stopwatch {
         return stringBuilder.toString();
     }
 
-    private void put(String methodName, long nanos) {
-        testsMap.put(methodName, nanos);
-    }
 }
