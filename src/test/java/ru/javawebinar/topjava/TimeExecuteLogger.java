@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
@@ -15,18 +16,23 @@ public class TimeExecuteLogger extends Stopwatch {
 
     @Override
     protected void succeeded(long nanos, Description description) {
-        extracted(description, "succeeded", nanos);
+        processStatus(description, "succeeded", nanos);
     }
 
     @Override
     protected void failed(long nanos, Throwable e, Description description) {
-        extracted(description, "failed", nanos);
+        processStatus(description, "failed", nanos);
     }
 
-    private void extracted(Description description, String status, long nanos) {
+    @Override
+    protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+        processStatus(description, "skipped", nanos);
+    }
+    
+    private void processStatus(Description description, String status, long nanos) {
         String testName = description.getMethodName();
-        log.info("{}: {} - {} ms", testName, status, nanos / 1000000);
-        testsMap.put(description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+        log.info("{}: {} - {} ms", testName, status, TimeUnit.NANOSECONDS.toMillis(nanos));
+        testsMap.put(testName, TimeUnit.NANOSECONDS.toMillis(nanos));
     }
 
     public static String result(){
